@@ -18,6 +18,7 @@ document.getElementById('devID').textContent   = MATRICULA;
 
 let db;
 let currentPhotoBase64 = null;
+let deferredInstallPrompt = null;
 
 // ── SAVE EVENT ───────────────────────────────────────────────────
 async function saveEvent() {
@@ -84,8 +85,73 @@ function showToast(msg, isError=false) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => {
+      console.error('Service Worker registration failed:', err);
+    });
+  });
+}
+
+function setupInstallExperience() {
+  const installBtn = document.getElementById('installBtn');
+  const installHint = document.getElementById('installHint');
+  if (!installBtn || !installHint) return;
+
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  if (isStandalone) {
+    installBtn.style.display = 'none';
+    installHint.style.display = 'none';
+    return;
+  }
+
+  if (isIOS) {
+    installHint.style.display = 'block';
+  }
+
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    installBtn.style.display = 'inline-flex';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (!deferredInstallPrompt) {
+      showToast('Abre el menu del navegador y selecciona instalar aplicacion');
+      return;
+    }
+
+    deferredInstallPrompt.prompt();
+
+    try {
+      const choiceResult = await deferredInstallPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        showToast('✔ APLICACION INSTALADA');
+      }
+    } catch (err) {
+      console.error('Install prompt failed:', err);
+    }
+
+    deferredInstallPrompt = null;
+    installBtn.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    installBtn.style.display = 'none';
+    installHint.style.display = 'none';
+    showToast('✔ APP LISTA EN EL DISPOSITIVO');
+  });
+}
+
 // ── BOOT ─────────────────────────────────────────────────────────
 (async () => {
+  registerServiceWorker();
+  setupInstallExperience();
   await initDB();
   setDefaultDate();
   updateDashboard();

@@ -7,9 +7,13 @@
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="911 Misiones">
         <title>911 | Sistema de Registro de Misiones</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <link rel="manifest" href="manifest.webmanifest">
+        <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+        <link rel="apple-touch-icon" href="icons/icon-192.png">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -77,6 +81,13 @@
                                                                     <button class="btn btn-primary" onclick="showSection('register')">
                                                                                REGISTRAR NUEVA MISIÓN
                                                                     </button>
+                                                                    <br><br>
+                                                                    <button class="btn btn-ghost" id="installBtn" style="display:none">
+                                                                               INSTALAR APP EN ESTE TELEFONO
+                                                                    </button>
+                                                                    <div id="installHint" style="display:none; margin-top:10px; font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:.8px; line-height:1.4;">
+                                                                              En iPhone: toca Compartir y luego "Anadir a pantalla de inicio".
+                                                                    </div>
                                                                 </section>
                                                             
                                                               <!--  REGISTER FORM  -->
