@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="theme-color" content="#b91c1c">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <title>911 | Sistema de Registro de Misiones</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+
+        <header>
+              <div class="header-inner">
+                    <div class="logo-block">
+                              <div class="badge-911">911</div>
+                                    <div>
+                                                <div class="header-title">SISTEMA DE REGISTRO</div>
+                                                        <div class="header-subtitle"> UNIDAD DE EMERGENCIAS</div>
+                                    </div>
+                                </div>
+                                    <div class="status-dot" title="Sistema activo"></div>
+                            </div>
+                        </header>
+
+                        <nav>
+                              <div class="nav-inner">
+                                    <button class="nav-btn active" onclick="showSection('dashboard')" id="nav-dashboard"> INICIO</button>
+                                        <button class="nav-btn" onclick="showSection('register')" id="nav-register"> REGISTRAR</button>
+                                            <button class="nav-btn" onclick="showSection('events')" id="nav-events"> MISIONES</button>
+                              </div>
+                            </nav>
+
+                            <main>
+
+                                  <!--  DASHBOARD  -->
+                                  <section class="section active" id="section-dashboard">
+                                        <div class="live-clock" id="liveClock"> CARGANDO...</div>
+                                    
+                                        <div class="alert-banner">
+                                                  <span class="pulse-icon"></span>
+                                                      <span>SISTEMA OPERATIVO  DATOS ALMACENADOS LOCALMENTE</span>
+                                        </div>
+                                    
+                                        <div class="stats-grid">
+                                                  <div class="stat-card">
+                                                            <div class="stat-num" id="statTotal">0</div>
+                                                                <div class="stat-label">Total Misiones</div>
+                                                  </div>
+                                                      <div class="stat-card">
+                                                                <div class="stat-num" id="statToday">0</div>
+                                                                    <div class="stat-label">Hoy</div>
+                                                      </div>
+                                                          <div class="stat-card">
+                                                                    <div class="stat-num" id="statWithPhoto">0</div>
+                                                                        <div class="stat-label">Con Foto</div>
+                                                          </div>
+                                                              <div class="stat-card">
+                                                                        <div class="stat-num" id="statMonth">0</div>
+                                                                            <div class="stat-label">Este Mes</div>
+                                                              </div>
+                                                            </div>
+                                                        
+                                                            <div class="section-label">Última Misión Registrada</div>
+                                                            <div id="lastEventPreview">
+                                                                      <div class="empty-state">
+                                                                                <div class="empty-icon"></div>
+                                                                                    <div class="empty-text">No hay misiones registradas aún</div>
+                                                                      </div>
+                                                                    </div>
+                                                                
+                                                                    <br>
+                                                                    <button class="btn btn-primary" onclick="showSection('register')">
+                                                                               REGISTRAR NUEVA MISIÓN
+                                                                    </button>
+                                                                </section>
+                                                            
+                                                              <!--  REGISTER FORM  -->
+                                                              <section class="section" id="section-register">
+                                                                    <div class="section-label">Nueva Misión / Evento</div>
+                                                                
+                                                                    <div class="form-group">
+                                                                              <label> Fecha del Evento</label>
+                                                                                  <input type="date" id="eventDate">
+                                                                    </div>
+                                                                
+                                                                    <div class="form-group">
+                                                                              <label> Título del Evento</label>
+                                                                                  <input type="text" id="eventTitle" placeholder="Ej: Accidente vial en Av. Principal">
+                                                                    </div>
+                                                                
+                                                                    <div class="form-group">
+                                                                              <label> Descripción</label>
+                                                                                  <textarea id="eventDesc" placeholder="Describe los detalles de la misión: ubicación, personas involucradas, acciones tomadas, resultado..."></textarea>
+                                                                    </div>
+                                                                
+                                                                    <div class="form-group">
+                                                                              <label> Fotografía</label>
+                                                                                  <div class="photo-upload-area" id="uploadArea">
+                                                                                            <input type="file" id="photoInput" accept="image/*" capture="environment" onchange="handlePhotoSelect(this)">
+                                                                                                <img class="photo-preview" id="photoPreview" alt="Vista previa">
+                                                                                                    <div id="uploadPrompt">
+                                                                                                                  <div class="upload-icon"></div>
+                                                                                                                          <div class="upload-text">Toca para seleccionar o tomar foto</div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        
+                                                                                            <button class="btn btn-primary" onclick="saveEvent()">
+                                                                                                       GUARDAR MISIÓN
+                                                                                            </button>
+                                                                                            <br><br>
+                                                                                            <button class="btn btn-ghost" onclick="clearForm()"> LIMPIAR FORMULARIO</button>
+                                                                                        </section>
+                                                                                    
+                                                                                      <!--  EVENTS LIST  -->
+                                                                                      <section class="section" id="section-events">
+                                                                                            <div id="detailView" style="display:none">
+                                                                                                      <!-- Detail view rendered dynamically -->
+                                                                                            </div>
+                                                                                        
+                                                                                            <div id="listView">
+                                                                                                      <div class="search-wrap">
+                                                                                                                <span class="search-icon"></span>
+                                                                                                                    <input type="text" id="searchInput" placeholder="Buscar misiones..." oninput="renderList()">
+                                                                                                      </div>
+                                                                                                          <div class="section-label" id="listLabel">Misiones Registradas</div>
+                                                                                                              <div class="events-list" id="eventsList"></div>
+                                                                                                    </div>
+                                                                                                </section>
+                                                                                            
+                                                                                            </main>
+                                                                                        
+                                                                                        <!-- WATERMARK / FOOTER  identificacin del desarrollador -->
+                                                                                        <div class="watermark">
+                                                                                              <!--
+                                                                                                911 Emergency Mission Logger
+                                                                                                    Desarrollado por: [TU NOMBRE] | Matrcula: [TU MATRCULA]
+                                                                                                        Versin 1.0  Sistema de Registro de Emergencias
+                                                                                                            Datos almacenados localmente en el dispositivo
+                                                                                        -->
+                                                                                                          911 EMERGENCY MISSION LOGGER  DEV: <span id="devName">[TU NOMBRE]</span>  ID: <span id="devID">[TU MATRCULA]</span><br>
+                                                                                                          DATOS LOCALES  OFFLINE READY  v1.0
+                                                                                        </div>
+                                                                                    
+                                                                                    <!-- Toast notification -->
+                                                                                    <div class="toast" id="toast"></div>
+                                                                                
+                                                                                <script src="js/db.js"></script>
+                                                                            <script src="js/ui.js"></script>
+                                                                        <script src="js/app.js"></script>
+                                                                                    </body>
+                                                                                </html>
